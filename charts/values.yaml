@@ -12,7 +12,7 @@ image:
 
 imagePullSecrets: []
 nameOverride: ""
-fullnameOverride: ""
+fullnameOverride: "cloud-game-engine-backend"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -38,8 +38,15 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 8080
-  targetPort: 8080
+  ports:
+  - port: 80
+    targetPort: 80
+    protocole: TCP
+    name: http
+  - port: 8081
+    targetPort: 8081
+    protocole: TCP
+    name: ws
 
 ingress:
   enabled: true
@@ -51,7 +58,11 @@ ingress:
     # kubernetes.io/tls-acme: "true"
   hosts:
     - host: localhost
-      paths: ['/api']
+      paths:
+        - path: /api
+          port: 80
+        - path: /ws
+          port: 8081
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
